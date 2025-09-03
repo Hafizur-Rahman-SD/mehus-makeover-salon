@@ -1,0 +1,22 @@
+site server:npm run dev 
+http://localhost:5173
+admin panal server: http://localhost:5173/admin/login
+Email: admin@mehus.com
+
+Password: 123456
+
+http://localhost:5173/admin/dashboard
+backend run: npx nodemon server.js
+for admin panel 
+cd mehus-frontend
+npm run dev
+cd mehus-frontend
+npm run dev
+http://localhost:5173/admin
+
+promt for tomorw work
+1. bokking from theke maje maje sob data submit hoy maje maje error dekhay, amar booking from er service er jaygay optio gula keno asche na amar .amake service option gula anba date time rakba phone number email sob bokking page e thik thakbe just add hobe amar sob services gula.r oi jaygay price er option gula dekhacce na keno database e ti tabl ache 
+2. ami amar admin panel e keno dhukte parchi na kono vabe r dhukle o kivabe dhukbo bolo amake . amar admin panel e kichu e asche na akhon page error dekhacche Hmmm… can't reach this page
+localhost refused to connect. amon error ache keno aita fixed koro. ami amar bokking er sob data database er sathe sathe admin deshboed er bokking page eo dekte chai amar admin e  login user name pass rakte hobe. 
+3.ami amar ei porjonto sob kaj apadpto deploye korar por developnment korte chai ami kivabe sob deploye korbo free te vercher,render naki onno kichu use korbo ami amake akhon sob code update korte hobe jebno github e impresion valo pore commit kore kore update korbo code setar full process obossoi clear kore dite hobe (amar ai porjonto project deploye kora chai e chai)deploye e ki amar backend e kono somossa hobe ami amar full site publish korte chai valo vabe tar jonno j way ta best hoy amke tai okrte hobe 
+main work hoilo admin panl problem fixed korte hobe r projecrt deploye korte e hobe sathe bokking page e services gula add korte hobe baki sob kichu thik thakbe 

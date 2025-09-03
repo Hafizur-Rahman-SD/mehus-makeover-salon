@@ -1,0 +1,37 @@
+:root {
+--bs-primary: #e85a90; /* rose */
+--bs-secondary: #ffeff6; /* very light pink */
+--bs-dark: #3a3a40;
+--bs-light: #fff7fa; /* page background */
+}
+
+
+html, body {
+background-color: var(--bs-light);
+}
+
+
+.btn-primary {
+border-radius: 999px;
+padding-inline: 1.25rem;
+}
+
+
+.hero {
+background: linear-gradient(180deg, #ffe3ee 0%, #fff7fa 100%);
+}
+
+
+.section-title {
+font-weight: 700;
+letter-spacing: 0.3px;
+}
+
+
+.card-img-top {
+object-fit: cover;
+height: 180px;
+}
+/* small helpers */
+.modal.d-block { background: rgba(0,0,0,0.45); }
+.table td, .table th { vertical-align: middle; }
