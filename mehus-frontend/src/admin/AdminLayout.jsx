@@ -27,6 +27,10 @@ export default function AdminLayout() {
               Finance
             </Link>
           </li>
+          <li className="nav-item">
+  <a className="nav-link" href="/admin/receipts">Receipts</a>
+</li>
+
         </ul>
       </aside>
 

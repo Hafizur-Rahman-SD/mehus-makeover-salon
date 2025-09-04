@@ -17,6 +17,7 @@ import Dashboard from "./admin/Dashboard.jsx";
 import ServicesAdmin from "./admin/Services.jsx";
 import BookingsAdmin from "./admin/Bookings.jsx";
 import Finance from "./admin/Finance.jsx";
+import Receipts from "./admin/Receipts";
 
 export default function App() {
   return (
@@ -46,13 +47,14 @@ export default function App() {
         />
 
         {/* Admin Layout */}
-<Route path="/admin/login" element={<Login onLogin={() => { window.location.href='/admin'; }} />} />
+        <Route path="/admin/login" element={<Login onLogin={() => { window.location.href = '/admin'; }} />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="services" element={<ServicesAdmin />} />
           <Route path="bookings" element={<BookingsAdmin />} />
           <Route path="finance" element={<Finance />} />
+          <Route path="/admin/receipts" element={<Receipts />} />
 
 
 
