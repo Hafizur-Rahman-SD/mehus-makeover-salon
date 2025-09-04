@@ -1,3 +1,5 @@
+import generateReceipt from "./ReceiptPrint";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -41,6 +43,7 @@ export default function Bookings() {
             <th>Time</th>
             <th>Phone</th>
             <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +72,30 @@ export default function Bookings() {
                     <option>Confirmed</option>
                     <option>Completed</option>
                   </select>
+                </td>
+                <td>
+                  {/* ✅ এখানে receipt এর জন্য নতুন button */}
+                  <button
+                    className="btn btn-sm btn-success me-2"
+                    onClick={() => {
+                      const advance = prompt("Enter Advance:");
+                      const due = prompt("Enter Due:");
+                      const total = prompt("Enter Total:");
+                      axios.put(`http://localhost:5000/api/receipts/${b.id}/confirm`, { advance, due, total })
+                        .then(() => alert("✅ Receipt Confirmed & Finance Updated"))
+                        .catch(err => console.error("❌ Error:", err));
+                    }}
+                  >
+                    Generate Receipt
+                  </button>
+
+                  {/* ✅ Print Receipt button */}
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => generateReceipt(b)}
+                  >
+                    Print Receipt
+                  </button>
                 </td>
               </tr>
             ))
