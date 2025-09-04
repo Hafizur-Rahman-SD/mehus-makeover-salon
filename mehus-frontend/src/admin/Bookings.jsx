@@ -92,7 +92,7 @@ export default function Bookings() {
                   {/* ✅ Print Receipt button */}
                   <button
                     className="btn btn-sm btn-primary"
-                    onClick={() => generateReceipt(b)}
+                    onClick={() => generateReceipt(b)} //b =booking object
                   >
                     Print Receipt
                   </button>

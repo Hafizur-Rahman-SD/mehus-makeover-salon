@@ -65,10 +65,29 @@ export default function Receipts() {
                 value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))} />
             </div>
             <div className="col-md-3">
-              <label className="form-label">Service</label>
-              <input className="form-control"
-                value={form.service} onChange={e=>setForm(f=>({...f,service:e.target.value}))} />
-            </div>
+  <label className="form-label">Service</label>
+  <select
+    className="form-select"
+    value={form.service}
+    onChange={e=>setForm(f=>({...f, service:e.target.value}))}
+  >
+    <option value="">Select Service</option>
+    <option value="Hair Cut">Hair Cut</option>
+    <option value="Facial">Facial</option>
+    <option value="Makeup">Makeup</option>
+    <option value="Spa">Spa</option>
+    <option value="Nail Art">Nail Art</option>
+    <option value="Others">Others</option>
+  </select>
+  {form.service === "Others" && (
+    <input
+      className="form-control mt-2"
+      placeholder="Enter Service Name"
+      onChange={e=>setForm(f=>({...f, service:e.target.value}))}
+    />
+  )}
+</div>
+
             <div className="col-md-1">
               <label className="form-label">Total</label>
               <input type="number" className="form-control" required
