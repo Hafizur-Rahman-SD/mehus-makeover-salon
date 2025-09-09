@@ -12,7 +12,7 @@ return (
 <section className="py-5">
 <div className="container">
 <div className="d-flex justify-content-between align-items-end mb-3">
-<h2 className="section-title h3">Popular Services</h2>
+<h2 className="section-title h1">Our Popular Services:</h2>
 <Link to="/services" className="btn btn-outline-secondary btn-sm">See all</Link>
 </div>
 <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
