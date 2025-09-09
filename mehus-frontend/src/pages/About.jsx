@@ -9,7 +9,7 @@ export default function About() {
       <div className="container">
         {/* Heading */}
         <h1
-          className="mb-4 text-center fw-bold"
+          className="mb-5 text-center fw-bold"
           style={{
             fontSize: "3rem",
             background: "linear-gradient(90deg, #ff4e8c, #ff94c2)",
@@ -25,14 +25,14 @@ export default function About() {
         <p
           className="text-center mx-auto"
           style={{
-            fontSize: "1.25rem",
+            fontSize: "1.45rem",
             maxWidth: "750px",
             color: "#5a3d55",
             lineHeight: "1.9",
             textShadow: "1px 1px 3px rgba(0,0,0,0.1)",
           }}
         >
-          At <strong>Mehus Makeover Salon</strong>, we bring out the elegance in every woman.
+          At <strong>Mehus Makeover Salon & Cosmetics</strong>, we bring out the elegance in every woman.
           Our expert stylists and beauty professionals are dedicated to giving you
           a luxurious experience where confidence meets beauty. 💖
         </p>
@@ -109,8 +109,8 @@ export default function About() {
                   >
                     Team Member {i}
                   </h5>
-                  <p className="card-text text-secondary fs-6">
-                    Certified stylist and makeover expert ✨
+                  <p className="card-text text-secondary fs-4">
+                   Our Certified stylist and makeover expert ✨
                   </p>
                 </div>
               </div>
