@@ -22,7 +22,7 @@ export default function Services() {
       <div className="container">
         <h1 className="h3 section-title mb-3">Services</h1>
 
-        <div className="row g-3 align-items-end mb-3">
+        <div className="row g-4 align-items-end mb-4">
           <div className="col-md-6">
             <label className="form-label">Search</label>
             <input
