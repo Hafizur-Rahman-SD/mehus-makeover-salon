@@ -6,7 +6,7 @@ return (
 <nav className="navbar navbar-expand-lg  border-bottom sticky-top py-3 " style={{backgroundColor: "#ffe6f0"}}>
 <div className="container-fluid" >
 <Link className="navbar-brand fw-bold text-primary fs-1" to="/">
-<i className="bi bi-stars me-2"/>Mehu's Makeover Salon & Cosmetics
+<i className="bi bi-stars me-2"/>Mehu's Makeovers
 </Link>
 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
 <span className="navbar-toggler-icon " />
