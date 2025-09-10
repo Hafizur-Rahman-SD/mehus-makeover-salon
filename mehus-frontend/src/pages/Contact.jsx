@@ -9,11 +9,11 @@ export default function Contact() {
               <div className="card-body">
                 <h5 className="card-title">Get in touch</h5>
                 <p className="text-secondary small">
-                  Phone: 01234-567890
+                  Phone: 01648322690 
                   <br />
-                  Email: hello@mehusmakeover.com
+                  Email: mehus makeovers@gmail.com
                   <br />
-                  Address: Dhanmondi, Dhaka
+                  Address: 17/1,jononi villa,west Nakhalpara,Bonoful Road,Framgate,Dhaka
                 </p>
               </div>
             </div>

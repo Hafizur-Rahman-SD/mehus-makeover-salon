@@ -16,7 +16,7 @@ export default function Footer() {
             <h5 className="fw-bold mb-2 fs-5 fs-md-4 text-pink">
               Contact Us
             </h5>
-            <p className="mb-1 fs-6 fs-md-5">📍 House 123, Road 4, Dhaka, Bangladesh</p>
+            <p className="mb-1 fs-6 fs-md-5">📍 House 17/1,jononi villa,West Nakhalpara,Bonoful Road,Framgate,Dhaka</p>
             <p className="mb-1 fs-6 fs-md-5">📞 +880 1777236613,01605135004</p>
             <p className="mb-0 fs-6 fs-md-5">✉️ info@mehusmakeover.com</p>
           </div>
