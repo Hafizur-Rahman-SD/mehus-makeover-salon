@@ -5,6 +5,8 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import financeRoutes from "./routes/financeRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import receiptRoutes from "./routes/receiptRoutes.js";
+import offersRoutes from "./routes/offersRoutes.js";
+
 
 dotenv.config();
 const app = express();
@@ -21,6 +23,9 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/receipts", receiptRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/api/offers", offersRoutes);
+
 
 // server start
 const PORT = process.env.PORT || 5000;

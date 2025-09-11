@@ -18,6 +18,8 @@ import ServicesAdmin from "./admin/Services.jsx";
 import BookingsAdmin from "./admin/Bookings.jsx";
 import Finance from "./admin/Finance.jsx";
 import Receipts from "./admin/Receipts";
+import ManageOffers from "./admin/ManageOffers.jsx";
+
 
 export default function App() {
   return (
@@ -55,6 +57,8 @@ export default function App() {
           <Route path="bookings" element={<BookingsAdmin />} />
           <Route path="finance" element={<Finance />} />
           <Route path="/admin/receipts" element={<Receipts />} />
+          <Route path="/admin/offers" element={<ManageOffers/>} />
+
 
 
 

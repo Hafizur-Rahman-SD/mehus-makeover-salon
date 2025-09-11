@@ -31,7 +31,9 @@ export default function AdminLayout() {
           <li className="nav-link text-white">
             <a className="nav-link" href="/admin/receipts">Receipts</a>
           </li>
-
+ <li className="list-group-item">
+          <Link to="/admin/offers">Manage Offers</Link>
+        </li>
         </ul>
       </aside>
 
