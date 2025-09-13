@@ -9,166 +9,288 @@ export default function ManageOffers() {
     price: "",
     start_date: "",
     end_date: "",
+    service: "",
+    otherService: "",
+    terms: "",
     image: null,
   });
-  const [editingId, setEditingId] = useState(null);
 
-  const loadOffers = () => {
-    axios.get("http://localhost:5000/api/offers")
-      .then(res => setOffers(res.data))
-      .catch(err => console.error("❌ Error loading offers:", err));
-  };
+  const [loading, setLoading] = useState(false);
+  const [services, setServices] = useState([]);
 
+  // ✅ Fetch offers + services
   useEffect(() => {
-    loadOffers();
+    axios
+      .get("http://localhost:5000/api/offers")
+      .then((res) => setOffers(res.data))
+      .catch((err) => console.error("❌ Error fetching offers:", err));
+
+    axios
+      .get("http://localhost:5000/api/services")
+      .then((res) => setServices(res.data))
+      .catch((err) => console.error("❌ Error fetching services:", err));
   }, []);
 
+  // ✅ Handle input
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "image") {
-      setForm({ ...form, image: files[0] });
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  // ✅ Submit offer
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      data.append(key, value);
-    });
+    setLoading(true);
 
-    if (editingId) {
-      // ✅ Update
-      axios.put(`http://localhost:5000/api/offers/${editingId}`, data, {
+    try {
+      const data = new FormData();
+      Object.keys(form).forEach((key) => {
+        data.append(key, form[key]);
+      });
+
+      if (form.service === "Other") {
+        data.set("service", form.otherService);
+      }
+
+      await axios.post("http://localhost:5000/api/offers", data, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-        .then(() => {
-          loadOffers();
-          resetForm();
-        })
-        .catch(err => console.error("❌ Error updating offer:", err));
-    } else {
-      // ✅ Create
-      axios.post("http://localhost:5000/api/offers", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-        .then(() => {
-          loadOffers();
-          resetForm();
-        })
-        .catch(err => console.error("❌ Error creating offer:", err));
+      });
+
+      alert("✅ Offer saved successfully!");
+
+      setForm({
+        title: "",
+        description: "",
+        price: "",
+        start_date: "",
+        end_date: "",
+        service: "",
+        otherService: "",
+        terms: "",
+        image: null,
+      });
+
+      const res = await axios.get("http://localhost:5000/api/offers");
+      setOffers(res.data);
+    } catch (err) {
+      console.error("❌ Error saving offer:", err);
+      alert("Error saving offer");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleEdit = (offer) => {
-    setForm({
-      title: offer.title,
-      description: offer.description,
-      price: offer.price,
-      start_date: offer.start_date,
-      end_date: offer.end_date,
-      image: null,
-    });
-    setEditingId(offer.id);
-  };
-
-  const handleDelete = (id) => {
-    if (!window.confirm("Are you sure?")) return;
-    axios.delete(`http://localhost:5000/api/offers/${id}`)
-      .then(() => loadOffers())
-      .catch(err => console.error("❌ Error deleting offer:", err));
-  };
-
-  const resetForm = () => {
-    setForm({ title: "", description: "", price: "", start_date: "", end_date: "", image: null });
-    setEditingId(null);
+  // ✅ Delete offer
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure to delete this offer?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/offers/${id}`);
+      setOffers((prev) => prev.filter((o) => o.id !== id));
+    } catch (err) {
+      console.error("❌ Error deleting offer:", err);
+    }
   };
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4">Manage Offers</h2>
+      <h2 className="mb-4 fw-bold text-center text-primary">
+        🎉 Manage Offers
+      </h2>
 
-      {/* Offer Form */}
-      <form className="mb-4" onSubmit={handleSubmit} encType="multipart/form-data">
+      {/* ✅ Offer Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="p-4 shadow-lg rounded-4 bg-light mb-5"
+      >
         <div className="row g-3">
-          <div className="col-md-4">
-            <input type="text" name="title" className="form-control"
-              placeholder="Offer Title" value={form.title} onChange={handleChange} required />
-          </div>
-          <div className="col-md-4">
-            <input type="number" name="price" className="form-control"
-              placeholder="Price" value={form.price} onChange={handleChange} required />
-          </div>
-          <div className="col-md-4">
-            <input type="file" name="image" className="form-control" onChange={handleChange} />
-          </div>
           <div className="col-md-6">
-            <input type="date" name="start_date" className="form-control"
-              value={form.start_date} onChange={handleChange} />
+            <label className="form-label fw-semibold">Title</label>
+            <input
+              type="text"
+              className="form-control"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              required
+            />
           </div>
+
           <div className="col-md-6">
-            <input type="date" name="end_date" className="form-control"
-              value={form.end_date} onChange={handleChange} />
+            <label className="form-label fw-semibold">Price</label>
+            <input
+              type="number"
+              className="form-control"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              required
+            />
           </div>
-          <div className="col-12">
-            <textarea name="description" className="form-control"
-              placeholder="Description" value={form.description} onChange={handleChange} />
+
+          <div className="col-md-12">
+            <label className="form-label fw-semibold">Description</label>
+            <textarea
+              className="form-control"
+              name="description"
+              rows="2"
+              value={form.description}
+              onChange={handleChange}
+            />
           </div>
-          <div className="col-12 text-end">
-            <button className="btn btn-primary">{editingId ? "Update Offer" : "Save Offer"}</button>
-            {editingId && (
-              <button type="button" className="btn btn-secondary ms-2" onClick={resetForm}>
-                Cancel
-              </button>
-            )}
+
+          {/* ✅ Start & End Date */}
+          <div className="col-md-6">
+            <label className="form-label fw-semibold">Start Date</label>
+            <input
+              type="date"
+              className="form-control"
+              name="start_date"
+              value={form.start_date}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label className="form-label fw-semibold">End Date</label>
+            <input
+              type="date"
+              className="form-control"
+              name="end_date"
+              value={form.end_date}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* ✅ Service Select */}
+          <div className="col-md-6">
+            <label className="form-label fw-semibold">Service</label>
+            <select
+              className="form-select"
+              name="service"
+              value={form.service}
+              onChange={handleChange}
+              required
+            >
+              <option value="">-- Select Service --</option>
+              {services.map((s) => (
+                <option key={s.id} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {form.service === "Other" && (
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Other Service</label>
+              <input
+                type="text"
+                className="form-control"
+                name="otherService"
+                value={form.otherService}
+                onChange={handleChange}
+                placeholder="Enter custom service"
+              />
+            </div>
+          )}
+
+          {/* ✅ Terms & Conditions */}
+          <div className="col-md-12">
+            <label className="form-label fw-semibold">Terms & Conditions</label>
+            <textarea
+              className="form-control"
+              name="terms"
+              rows="2"
+              value={form.terms}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* ✅ Image Upload */}
+          <div className="col-md-12">
+            <label className="form-label fw-semibold">Offer Image</label>
+            <input
+              type="file"
+              className="form-control"
+              name="image"
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, image: e.target.files[0] }))
+              }
+              accept="image/*"
+            />
+          </div>
+
+          <div className="col-12 text-center">
+            <button className="btn btn-success px-4" disabled={loading}>
+              {loading ? "Saving..." : "Save Offer"}
+            </button>
           </div>
         </div>
       </form>
 
-      {/* Offer List */}
-      <table className="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Start - End</th>
-            <th>Image</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {offers.length === 0 ? (
-            <tr>
-              <td colSpan="6" className="text-center text-muted">No offers found</td>
-            </tr>
-          ) : (
-            offers.map(o => (
-              <tr key={o.id}>
-                <td>{o.id}</td>
-                <td>{o.title}</td>
-                <td>৳ {o.price}</td>
-                <td>{o.start_date} → {o.end_date}</td>
-                <td>
-                  {o.image && (
-                    <img src={`http://localhost:5000${o.image}`} alt="offer" style={{ width: "80px" }} />
+      {/* ✅ Offer List */}
+      <h4 className="mb-3 fw-bold">📋 Current Offers</h4>
+      {offers.length === 0 ? (
+        <p className="text-muted">No offers available.</p>
+      ) : (
+        <div className="row g-4">
+          {offers.map((o) => (
+            <div className="col-md-4" key={o.id}>
+              <div className="card shadow-lg h-100 border-0 rounded-4 p-3">
+                {o.image && (
+                  <img
+                    src={`http://localhost:5000${o.image}`}
+                    alt={o.title}
+                    className="card-img-top rounded-3 mb-3"
+                    style={{ height: "200px", objectFit: "cover" }}
+                  />
+                )}
+
+                <div className="card-body">
+                  <h4 className="fw-bold text-primary mb-2">{o.title}</h4>
+                  <p className="text-muted">{o.description}</p>
+
+                  <p>
+                    <strong>Service:</strong> {o.service || "N/A"}
+                  </p>
+
+                  <p>
+                    <strong>Valid:</strong>{" "}
+                    {o.start_date
+                      ? new Date(o.start_date).toLocaleDateString()
+                      : "—"}{" "}
+                    →{" "}
+                    {o.end_date
+                      ? new Date(o.end_date).toLocaleDateString()
+                      : "—"}
+                  </p>
+
+                  <p className="text-success fw-bold fs-5">৳ {o.price}</p>
+
+                  {o.terms && (
+                    <p className="small text-muted">
+                      <strong>Terms:</strong> {o.terms}
+                    </p>
                   )}
-                </td>
-                <td>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(o)}>
-                    Edit
-                  </button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(o.id)}>
+
+                  <button
+                    className="btn btn-sm btn-danger mt-2"
+                    onClick={() => handleDelete(o.id)}
+                  >
                     Delete
                   </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
