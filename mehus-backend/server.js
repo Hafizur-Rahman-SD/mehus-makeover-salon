@@ -1,3 +1,6 @@
+// mehus-backend/server.js 
+// Main server file. hre all routes are imported and used. just run this file to start the server.
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -14,7 +17,7 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(express.json());
-// ✅ Root test route (এইখানেই বসাতে হবে)
+// ✅ Root test route (mustbe add all in here)
 app.get("/", (req, res) => {
   res.send("✅ Backend API is running...");
 });
