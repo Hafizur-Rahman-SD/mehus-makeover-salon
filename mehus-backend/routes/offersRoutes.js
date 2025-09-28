@@ -7,15 +7,15 @@ const router = express.Router();
 // ✅ MySQL connection
 const db = await mysql.createConnection({
   host: "localhost",
-  user: "root",   // তোমার MySQL user
-  password: "",   // যদি password থাকে সেটাও দাও
+  user: "root",   // my user name
+  password: "",   // my password
   database: "mehus_makeover",
 });
 
-// ✅ Multer storage (local uploads folder এ save হবে)
+// ✅ Multer storage (local uploads folder in root)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // root এর ভেতরে uploads folder থাকতে হবে
+    cb(null, "uploads/"); // root folder must be in updates
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
 });
 
 /* ===============================
-   2. Create new offer
+   2. Create new offers
 ================================ */
 router.post("/", upload.single("image"), async (req, res) => {
   const { title, description, price, start_date, end_date } = req.body;
@@ -56,7 +56,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 /* ===============================
-   3. Update offer
+   3. Update offers
 ================================ */
 router.put("/:id", upload.single("image"), async (req, res) => {
   const { id } = req.params;
@@ -76,7 +76,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
 });
 
 /* ===============================
-   4. Delete offer
+   4. Delete offers
 ================================ */
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
