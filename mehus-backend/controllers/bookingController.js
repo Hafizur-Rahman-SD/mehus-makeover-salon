@@ -7,7 +7,7 @@ export const addBooking = (req, res) => {
   // Debug log
   console.log("📥 Incoming Booking:", req.body);
 
-  // ✅ Correct SQL query
+  // see Correct SQL query
   const sql = `
     INSERT INTO bookings 
     (name, phone, email, service, date, time, note, price, status) 
@@ -33,10 +33,10 @@ export const getBookings = (req, res) => {
     res.json(rows);
   });
 };
-// 👉 Booking Status Update করা
+// 👉 Booking Status Update 
 export const updateBookingStatus = (req, res) => {
-  const { id } = req.params;     // booking id আসবে URL থেকে
-  const { status } = req.body;   // নতুন status আসবে body থেকে
+  const { id } = req.params;     // booking id cames from URL params
+  const { status } = req.body;   // New status comes from request body
 
   const sql = "UPDATE bookings SET status=? WHERE id=?";
   db.query(sql, [status, id], (err, result) => {
