@@ -16,6 +16,7 @@ export default function Bookings() {
       .catch(err => console.error("❌ Error fetching bookings:", err))
       .finally(() => setLoading(false));
   }, []);
+
   // ✅ Status Update Function
   const handleStatusChange = (id, newStatus) => {
     axios.put(`http://localhost:5000/api/bookings/${id}/status`, { status: newStatus })
@@ -63,7 +64,8 @@ export default function Bookings() {
                 <td>{b.time}</td>
                 <td>{b.phone}</td>
                 <td>
-                  {/* ✅ Dropdown for status update */}
+
+                  {/*  Dropdown for status update */}
                   <select
                     value={b.status}
                     onChange={(e) => handleStatusChange(b.id, e.target.value)}
@@ -74,7 +76,8 @@ export default function Bookings() {
                   </select>
                 </td>
                 <td>
-                  {/* ✅ এখানে receipt এর জন্য নতুন button */}
+
+                  {/*  এখানে receipt এর জন্য নতুন button */}
                   <button
                     className="btn btn-sm btn-success me-2"
                     onClick={() => {
@@ -89,7 +92,7 @@ export default function Bookings() {
                     Generate Receipt
                   </button>
 
-                  {/* ✅ Print Receipt button */}
+                  {/*  Print Receipt button */}
                   <button
                     className="btn btn-sm btn-primary"
                     onClick={() => generateReceipt(b)} //b =booking object
