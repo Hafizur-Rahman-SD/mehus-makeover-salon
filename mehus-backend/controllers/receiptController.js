@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-// ✅ Save receipt only (no finance entry yet)
+//  Save receipt only (no finance entry yet)
 export const createReceipt = (req, res) => {
   const { customer_name, phone, service, total, advance = 0, date } = req.body;
   const due = Number(total) - Number(advance);
@@ -15,7 +15,7 @@ export const createReceipt = (req, res) => {
   });
 };
 
-// ✅ Confirm receipt → add to finance
+//  Confirm receipt → add to finance
 export const confirmReceipt = (req, res) => {
   const { id } = req.params;
 
@@ -42,7 +42,7 @@ export const confirmReceipt = (req, res) => {
   });
 };
 
-// ✅ List all receipts
+//  List all receipts
 export const listReceipts = (req, res) => {
   db.query("SELECT * FROM receipts ORDER BY created_at DESC", (err, rows) => {
     if (err) return res.status(500).json({ error: err.sqlMessage });

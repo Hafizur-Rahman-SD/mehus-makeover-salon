@@ -17,7 +17,8 @@ const app = express();
 // middleware
 app.use(cors());
 app.use(express.json());
-// ✅ Root test route (mustbe add all in here)
+
+//  Root test route (mustbe add all in here)
 app.get("/", (req, res) => {
   res.send("✅ Backend API is running...");
 });

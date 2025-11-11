@@ -33,6 +33,7 @@ export const getBookings = (req, res) => {
     res.json(rows);
   });
 };
+
 // 👉 Booking Status Update 
 export const updateBookingStatus = (req, res) => {
   const { id } = req.params;     // booking id cames from URL params

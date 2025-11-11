@@ -1,3 +1,5 @@
+
+
 import mysql from "mysql2";
 import dotenv from "dotenv";
 
@@ -19,3 +21,6 @@ db.connect(err => {
 });
 
 export default db;
+
+
+//Database connection ta supabase e kora lageb ai jaygay sob kichu change hobe 

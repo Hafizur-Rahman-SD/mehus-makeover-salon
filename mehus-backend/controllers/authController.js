@@ -12,3 +12,6 @@ export const login = (req, res) => {
     res.json({ success: true, user: rows[0] });
   });
 };
+
+
+// ai jaygay sob kichu thik ache kintu ai jaygya frontend page ta sondor kora lagbe new admin dibo na lagbe na oita secrat rakbo 

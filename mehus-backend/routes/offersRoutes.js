@@ -4,7 +4,7 @@ import mysql from "mysql2/promise";
 
 const router = express.Router();
 
-// ✅ MySQL connection
+//  MySQL connection
 const db = await mysql.createConnection({
   host: "localhost",
   user: "root",   // my user name
@@ -12,7 +12,7 @@ const db = await mysql.createConnection({
   database: "mehus_makeover",
 });
 
-// ✅ Multer storage (local uploads folder in root)
+//  Multer storage (local uploads folder in root)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // root folder must be in updates
