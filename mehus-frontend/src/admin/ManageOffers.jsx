@@ -100,7 +100,7 @@ export default function ManageOffers() {
         🎉 Manage Offers
       </h2>
 
-      {/* ✅ Offer Form */}
+      {/*  Offer Form */}
       <form
         onSubmit={handleSubmit}
         className="p-4 shadow-lg rounded-4 bg-light mb-5"
