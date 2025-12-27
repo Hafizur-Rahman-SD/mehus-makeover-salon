@@ -9,10 +9,10 @@ export default function Hero() {
     currentDay: ""
   });
 
-  // Debug: Current time দেখানোর জন্য
+  // Debug: Current time info
   const [debugTime, setDebugTime] = useState("");
 
-  // AM/PM format এ time (আপনার সময় অনুযায়ী)
+  // AM/PM format এ time declear.
   const openingHours = {
     0: { isOpen: true, open: "11:00 AM", close: "11:00 PM" }, // Sunday
     1: { isOpen: true, open: "11:00 AM", close: "11:00 PM" }, // Monday
@@ -126,7 +126,7 @@ export default function Hero() {
       // Salon closed for today (after closing time)
       isOpenNow = false;
       
-      // Find next open day (আপনার সবদিন open, তাই tomorrow দেখাবে)
+      // Find next open day (always tomorrow in this case since open daily)
       const tomorrow = (currentDay + 1) % 7;
       statusText = `Closed • Opens tomorrow at ${formatTimeDisplay(openingHours[tomorrow].open)}`;
       nextOpeningTime = `Tomorrow at ${formatTimeDisplay(openingHours[tomorrow].open)}`;

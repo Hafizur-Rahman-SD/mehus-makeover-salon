@@ -1,3 +1,7 @@
+
+//price confrmed here and product desciption and others 
+
+
 export const SERVICES = [
 { id: 1, name: "Bridal Makeup", price: 6000, category: "Makeup", description: "Full bridal makeup with premium products.", image: "https://images.unsplash.com/photo-1512203492609-8f7f06f1f17f?q=80&w=1200&auto=format&fit=crop" },
 { id: 2, name: "Party Makeup", price: 1800, category: "Makeup", description: "Glam look for parties and events.", image: "https://images.unsplash.com/photo-1508852460266-c54e186adf5a?q=80&w=1200&auto=format&fit=crop" },
