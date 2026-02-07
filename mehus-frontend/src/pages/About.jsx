@@ -231,21 +231,21 @@ export default function About() {
           <div className="row g-4">
             {[
               { 
-                name: "Meherun Nahar", 
+                name: "Asma Hossain", 
                 role: "Founder & Lead Stylist",
                 experience: "10+ Years",
                 specialty: "Bridal Makeup, Hair Styling",
                 image: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?q=80&w=400&h=400&fit=crop"
               },
               { 
-                name: "Sadia Rahman", 
+                name: "Moon", 
                 role: "Senior Makeup Artist",
                 experience: "8+ Years", 
                 specialty: "Glam Makeup, Skincare",
                 image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&h=400&fit=crop"
               },
               { 
-                name: "Tasnim Ahmed", 
+                name: "Meghla Ahmed", 
                 role: "Hair Specialist",
                 experience: "6+ Years",
                 specialty: "Hair Coloring, Treatment",
@@ -373,7 +373,7 @@ export default function About() {
             </Link>
             
             <a 
-              href="tel:+8801777236613" 
+              href="tel:+8801648322690" 
               className="btn btn-lg rounded-pill px-5 py-3 fw-bold text-decoration-none"
               style={{
                 backgroundColor: "transparent",
@@ -391,8 +391,7 @@ export default function About() {
               }}
             >
               <i className="bi bi-telephone me-2"></i>
-              Call Us 
-              
+              Call Us <br /> 
             </a>
           </div>
         </div>

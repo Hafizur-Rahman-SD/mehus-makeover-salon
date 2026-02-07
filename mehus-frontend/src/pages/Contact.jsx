@@ -14,10 +14,10 @@ export default function Contact() {
   const [submitMessage, setSubmitMessage] = useState(null);
 
   const contactInfo = {
-    phone: "+880 1777 236613",
-    phone2: "+880 1605 135004",
+    phone: "+880 1648322690",
+    phone2: "+880 1576 721443",
     email: "info@mehusmakeover.com",
-    address: "House 17/1, Jononi Villa, West Nakhalpara, Bonoful Road, Farmgate, Dhaka",
+    address: "House 30, Road no-05, Nikunja-02, Khilkhet , Dhaka-1212",
     hours: "Everyday: 11:00 AM - 11:00 PM"
   };
 
@@ -466,7 +466,7 @@ export default function Contact() {
                 </a>
                 
                 <a 
-                  href="https://wa.me/8801777236613"
+                  href="https://wa.me/88801648322690"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="d-flex align-items-center justify-content-center rounded-circle"

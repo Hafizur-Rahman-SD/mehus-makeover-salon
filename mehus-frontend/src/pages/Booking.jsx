@@ -493,7 +493,7 @@ export default function Booking() {
                       </h6>
                       <div className="mb-2">
                         <i className="bi bi-telephone text-pink me-2"></i>
-                        <span style={{ color: "#8a5a6d" }}>+880 1777 236613</span>
+                        <span style={{ color: "#8a5a6d" }}>+880 1648322690</span>
                       </div>
                       <div className="mb-2">
                         <i className="bi bi-clock text-pink me-2"></i>
@@ -501,7 +501,7 @@ export default function Booking() {
                       </div>
                       <div>
                         <i className="bi bi-geo-alt text-pink me-2"></i>
-                        <span style={{ color: "#8a5a6d" }}>Farmgate, Dhaka</span>
+                        <span style={{ color: "#8a5a6d" }}> Road No-05,Nikunja-02,Khilkhet, Dhaka</span>
                       </div>
                     </div>
                   </div>
