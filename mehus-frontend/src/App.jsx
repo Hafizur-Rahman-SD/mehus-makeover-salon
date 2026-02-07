@@ -10,9 +10,13 @@ import Gallery from "./pages/Gallery.jsx";
 import Booking from "./pages/Booking.jsx";
 import Reviews from "./pages/Reviews.jsx";
 import Contact from "./pages/Contact.jsx";
+import Products from "./pages/Products.jsx";
+
 
 import AdminLayout from "./admin/AdminLayout.jsx";
 import Login from "./admin/Login.jsx";
+//import ProtectedAdminRoute from "./admin/ProtectedAdminRoute.jsx";
+
 import Dashboard from "./admin/Dashboard.jsx";
 import ServicesAdmin from "./admin/Services.jsx";
 import BookingsAdmin from "./admin/Bookings.jsx";
@@ -41,6 +45,8 @@ export default function App() {
                   <Route path="/booking" element={<Booking />} />
                   <Route path="/reviews" element={<Reviews />} />
                   <Route path="/contact" element={<Contact />} />
+                  <Route path="/products" element={<Products />} />
+
                 </Routes>
               </main>
               <Footer />
@@ -49,7 +55,8 @@ export default function App() {
         />
 
         {/* Admin Layout */}
-        <Route path="/admin/login" element={<Login onLogin={() => { window.location.href = '/admin'; }} />} />
+<Route path="/admin/login" element={<Login onLogin={() => { window.location.href = '/admin'; }} />} />
+  
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
