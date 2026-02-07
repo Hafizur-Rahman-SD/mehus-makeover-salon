@@ -34,8 +34,9 @@ export default function Footer() {
             </p>
             <div className="mt-3">
               <h6 className="fw-bold mb-2" style={{ color: "#ff4081" }}>Opening Hours</h6>
-              <p className="mb-1">Mon - Sat: 9:00 AM - 8:00 PM</p>
-              <p className="mb-0">Sunday: 10:00 AM - 6:00 PM</p>
+              <p className="mb-1">Mon - Sat: 10:00 AM - 11:00 PM</p>
+              <p className="mb-0">Sunday: 10:00 AM - 11:00 PM</p>
+              
             </div>
           </div>
 
@@ -86,9 +87,9 @@ export default function Footer() {
               <div>
                 <h6 className="fw-bold mb-0" style={{ color: "#8a5a6d" }}>Address</h6>
                 <p className="mb-0" style={{ color: "#d17a94" }}>
-                  House 17/1, Jononi Villa<br />
-                  West Nakhalpara, Bonoful Road<br />
-                  Farmgate, Dhaka
+                  House 30, Road Number -05<br />
+                  Nikunja -2, Khilkhet <br />
+                   Dhaka-1212
                 </p>
               </div>
             </div>
@@ -98,8 +99,8 @@ export default function Footer() {
               <div>
                 <h6 className="fw-bold mb-0" style={{ color: "#8a5a6d" }}>Phone</h6>
                 <p className="mb-0" style={{ color: "#d17a94" }}>
-                  +880 1777 236613<br />
-                  +880 1605 135004
+                  +880 1648322690<br />
+                  +880 157672 1443
                 </p>
               </div>
             </div>
@@ -110,6 +111,7 @@ export default function Footer() {
                 <h6 className="fw-bold mb-0" style={{ color: "#8a5a6d" }}>Email</h6>
                 <p className="mb-0" style={{ color: "#d17a94" }}>
                   info@mehusmakeover.com
+                  WhatsAPP: +8801648322690
                 </p>
               </div>
             </div>
@@ -153,7 +155,7 @@ export default function Footer() {
               {[
                 { icon: <FaFacebook />, color: "#1877F2", href: "https://facebook.com/people/Mehus-Makeover-salon/61579639642397/" },
                 { icon: <FaInstagram />, color: "#E4405F", href: "https://instagram.com" },
-                { icon: <FaWhatsapp />, color: "#25D366", href: "https://wa.me/8801777236613" },
+                { icon: <FaWhatsapp />, color: "#25D366", href: "https://wa.me/8801648322690" },
                 { icon: <FaYoutube />, color: "#FF0000", href: "https://youtube.com" }
               ].map((social, index) => (
                 <a
