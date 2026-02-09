@@ -69,8 +69,11 @@ export default function AdminLayout() {
   ];
 
   const handleLogout = () => {
-    // Add logout logic here
-    navigate("/");
+    // ✅ Clear login session
+    localStorage.removeItem("adminUser");
+    localStorage.removeItem("rememberMe"); // optional, but safe
+    // ✅ Go to admin login
+    navigate("/admin/login", { replace: true });
   };
 
   return (
