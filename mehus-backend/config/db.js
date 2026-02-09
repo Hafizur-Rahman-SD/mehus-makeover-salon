@@ -1,26 +1,28 @@
-
-
-import mysql from "mysql2";
+import pg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+const { Pool } = pg;
+
+if (!process.env.DATABASE_URL) {
+  console.error("❌ DATABASE_URL missing in .env");
+}
+
+const db = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // Supabase requires SSL in most hosted environments
+  ssl: { rejectUnauthorized: false }
 });
 
-db.connect(err => {
-  if (err) {
-    console.error("❌ Database connection failed:", err);
-    return;
+// Optional: test connection once on boot
+(async () => {
+  try {
+    const res = await db.query("SELECT NOW() as now");
+    console.log("✅ Supabase Postgres Connected:", res.rows[0].now);
+  } catch (err) {
+    console.error("❌ Database connection failed:", err.message);
   }
-  console.log("✅ MySQL Connected...");
-});
+})();
 
 export default db;
-
-
-//Database connection ta supabase e kora lageb ai jaygay sob kichu change hobe 
