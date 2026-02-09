@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { 
-  FaTag, 
-  FaPlus, 
-  FaTrash, 
-  FaEdit, 
-  FaCalendarAlt, 
-  FaImage, 
+import {
+  FaTag,
+  FaPlus,
+  FaTrash,
+  FaCalendarAlt,
+  FaImage,
   FaMoneyBillWave,
   FaListAlt,
   FaFileAlt,
-  FaFilter,
-  FaSearch
+  FaSearch,
 } from "react-icons/fa";
-
-const API_URL = "http://localhost:5000";
+import { API_URL } from "../config/api";
 
 export default function ManageOffers() {
   const [offers, setOffers] = useState([]);
@@ -37,39 +34,53 @@ export default function ManageOffers() {
   const [showForm, setShowForm] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // ✅ Fetch offers + services
+  // ✅ Fetch offers + services on load
   useEffect(() => {
     fetchOffers();
     fetchServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchOffers = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/offers`);
-      setOffers(res.data);
+      setOffers(res.data || []);
     } catch (err) {
       console.error("❌ Error fetching offers:", err);
+      setOffers([]);
     }
   };
 
+  // ✅ Optional: backend এ /api/services না থাকলেও app break করবে না
   const fetchServices = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/services`);
-      setServices(res.data);
+      setServices(res.data || []);
     } catch (err) {
-      console.error("❌ Error fetching services:", err);
+      // silent fallback (404 হলে normal)
+      setServices([]);
     }
   };
 
-  // ✅ Handle input
+  // ✅ Image src resolver (supports absolute URL + /uploads + uploads)
+  const getImageSrc = (img) => {
+    if (!img) return "";
+    if (img.startsWith("http://") || img.startsWith("https://")) return img;
+    if (img.startsWith("/")) return `${API_URL}${img}`;
+    return `${API_URL}/${img}`;
+  };
+
+  // ✅ Handle input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === "image" && files && files[0]) {
-      setForm(prev => ({ ...prev, image: files[0] }));
+      setForm((prev) => ({ ...prev, image: files[0] }));
       setImagePreview(URL.createObjectURL(files[0]));
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }));
+      return;
     }
+
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   // ✅ Submit offer
@@ -79,6 +90,7 @@ export default function ManageOffers() {
 
     try {
       const data = new FormData();
+
       Object.keys(form).forEach((key) => {
         if (form[key] !== null && form[key] !== "") {
           data.append(key, form[key]);
@@ -86,7 +98,7 @@ export default function ManageOffers() {
       });
 
       if (form.service === "Other") {
-        data.set("service", form.otherService);
+        data.set("service", form.otherService || "");
       }
 
       await axios.post(`${API_URL}/api/offers`, data, {
@@ -107,10 +119,11 @@ export default function ManageOffers() {
       });
       setImagePreview(null);
       setShowForm(false);
-      
+
       await fetchOffers();
     } catch (err) {
       console.error("❌ Error saving offer:", err);
+      alert("Offer save failed. Please check console / backend logs.");
     } finally {
       setLoading(false);
     }
@@ -119,54 +132,66 @@ export default function ManageOffers() {
   // ✅ Delete offer
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this offer?")) return;
+
     try {
       await axios.delete(`${API_URL}/api/offers/${id}`);
-      setOffers(prev => prev.filter(o => o.id !== id));
+      setOffers((prev) => prev.filter((o) => o.id !== id));
     } catch (err) {
       console.error("❌ Error deleting offer:", err);
+      alert("Delete failed. Please check console / backend logs.");
     }
   };
 
-  // Filter offers based on status
+  // ✅ Filter offers by status
   const filterOffers = (offer) => {
     const now = new Date();
     const start = new Date(offer.start_date);
     const end = new Date(offer.end_date);
-    
+
     if (activeFilter === "active") return now >= start && now <= end;
     if (activeFilter === "upcoming") return now < start;
     if (activeFilter === "expired") return now > end;
     return true;
   };
 
-  // Search filter
+  // ✅ Search offers
   const searchFilter = (offer) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return (
-      offer.title.toLowerCase().includes(term) ||
-      offer.description.toLowerCase().includes(term) ||
-      (offer.service && offer.service.toLowerCase().includes(term))
+      (offer.title || "").toLowerCase().includes(term) ||
+      (offer.description || "").toLowerCase().includes(term) ||
+      (offer.service || "").toLowerCase().includes(term)
     );
   };
 
-  const filteredOffers = offers.filter(filterOffers).filter(searchFilter);
+  const filteredOffers = useMemo(
+    () => offers.filter(filterOffers).filter(searchFilter),
+    [offers, activeFilter, searchTerm]
+  );
 
-  // Calculate stats
-  const activeOffers = offers.filter(o => {
+  // ✅ Stats
+  const activeOffers = useMemo(() => {
     const now = new Date();
-    const start = new Date(o.start_date);
-    const end = new Date(o.end_date);
-    return now >= start && now <= end;
-  }).length;
+    return offers.filter((o) => {
+      const start = new Date(o.start_date);
+      const end = new Date(o.end_date);
+      return now >= start && now <= end;
+    }).length;
+  }, [offers]);
 
-  const upcomingOffers = offers.filter(o => {
+  const upcomingOffers = useMemo(() => {
     const now = new Date();
-    const start = new Date(o.start_date);
-    return now < start;
-  }).length;
+    return offers.filter((o) => {
+      const start = new Date(o.start_date);
+      return now < start;
+    }).length;
+  }, [offers]);
 
-  const totalValue = offers.reduce((sum, o) => sum + parseFloat(o.price || 0), 0);
+  const totalValue = useMemo(
+    () => offers.reduce((sum, o) => sum + parseFloat(o.price || 0), 0),
+    [offers]
+  );
 
   return (
     <div className="container-fluid py-4">
@@ -177,14 +202,17 @@ export default function ManageOffers() {
             <FaTag className="me-2" />
             Manage Offers & Promotions
           </h2>
-          <p className="text-muted mb-0">Create and manage special offers for your salon services</p>
+          <p className="text-muted mb-0">
+            Create and manage special offers for your salon services
+          </p>
         </div>
-        <button 
+
+        <button
           className="btn d-flex align-items-center gap-2"
-          style={{ 
-            backgroundColor: "rgba(255, 64, 129, 0.1)", 
+          style={{
+            backgroundColor: "rgba(255, 64, 129, 0.1)",
             color: "#ff4081",
-            border: "none"
+            border: "none",
           }}
           onClick={() => setShowForm(!showForm)}
         >
@@ -196,13 +224,20 @@ export default function ManageOffers() {
       {/* Stats Cards */}
       <div className="row g-4 mb-4">
         <div className="col-md-4">
-          <div className="card border-0 shadow-sm h-100"
-               style={{ 
-                 background: "linear-gradient(135deg, rgba(37, 211, 102, 0.1), rgba(37, 211, 102, 0.05))",
-                 transition: "all 0.3s ease"
-               }}
-               onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-               onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}>
+          <div
+            className="card border-0 shadow-sm h-100"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(37, 211, 102, 0.1), rgba(37, 211, 102, 0.05))",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.transform = "translateY(-5px)")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.transform = "translateY(0)")
+            }
+          >
             <div className="card-body p-3">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
@@ -212,7 +247,10 @@ export default function ManageOffers() {
                   </h3>
                   <div className="small text-success mt-2">Currently running</div>
                 </div>
-                <div className="p-3 rounded-circle" style={{ backgroundColor: "rgba(37, 211, 102, 0.2)" }}>
+                <div
+                  className="p-3 rounded-circle"
+                  style={{ backgroundColor: "rgba(37, 211, 102, 0.2)" }}
+                >
                   <FaTag style={{ color: "#25d366", fontSize: "1.5rem" }} />
                 </div>
               </div>
@@ -221,13 +259,20 @@ export default function ManageOffers() {
         </div>
 
         <div className="col-md-4">
-          <div className="card border-0 shadow-sm h-100"
-               style={{ 
-                 background: "linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.05))",
-                 transition: "all 0.3s ease"
-               }}
-               onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-               onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}>
+          <div
+            className="card border-0 shadow-sm h-100"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.05))",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.transform = "translateY(-5px)")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.transform = "translateY(0)")
+            }
+          >
             <div className="card-body p-3">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
@@ -237,8 +282,13 @@ export default function ManageOffers() {
                   </h3>
                   <div className="small text-warning mt-2">Scheduled</div>
                 </div>
-                <div className="p-3 rounded-circle" style={{ backgroundColor: "rgba(255, 152, 0, 0.2)" }}>
-                  <FaCalendarAlt style={{ color: "#ff9800", fontSize: "1.5rem" }} />
+                <div
+                  className="p-3 rounded-circle"
+                  style={{ backgroundColor: "rgba(255, 152, 0, 0.2)" }}
+                >
+                  <FaCalendarAlt
+                    style={{ color: "#ff9800", fontSize: "1.5rem" }}
+                  />
                 </div>
               </div>
             </div>
@@ -246,13 +296,20 @@ export default function ManageOffers() {
         </div>
 
         <div className="col-md-4">
-          <div className="card border-0 shadow-sm h-100"
-               style={{ 
-                 background: "linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.05))",
-                 transition: "all 0.3s ease"
-               }}
-               onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-               onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}>
+          <div
+            className="card border-0 shadow-sm h-100"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.05))",
+              transition: "all 0.3s ease",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.transform = "translateY(-5px)")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.transform = "translateY(0)")
+            }
+          >
             <div className="card-body p-3">
               <div className="d-flex justify-content-between align-items-start">
                 <div>
@@ -262,8 +319,13 @@ export default function ManageOffers() {
                   </h3>
                   <div className="small text-primary mt-2">Combined value</div>
                 </div>
-                <div className="p-3 rounded-circle" style={{ backgroundColor: "rgba(156, 39, 176, 0.2)" }}>
-                  <FaMoneyBillWave style={{ color: "#9c27b0", fontSize: "1.5rem" }} />
+                <div
+                  className="p-3 rounded-circle"
+                  style={{ backgroundColor: "rgba(156, 39, 176, 0.2)" }}
+                >
+                  <FaMoneyBillWave
+                    style={{ color: "#9c27b0", fontSize: "1.5rem" }}
+                  />
                 </div>
               </div>
             </div>
@@ -273,34 +335,32 @@ export default function ManageOffers() {
 
       {/* Offer Creation Form */}
       {showForm && (
-        <div className="card border-0 shadow-sm mb-4"
-             style={{ 
-               borderLeft: "4px solid #ff4081",
-               transition: "all 0.3s ease"
-             }}>
+        <div
+          className="card border-0 shadow-sm mb-4"
+          style={{ borderLeft: "4px solid #ff4081", transition: "all 0.3s ease" }}
+        >
           <div className="card-body p-3">
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h6 className="fw-bold mb-0" style={{ color: "#8a5a6d" }}>
                 <FaPlus className="me-2" />
                 Create New Offer
               </h6>
-              <button 
+              <button
                 className="btn btn-sm"
                 onClick={() => setShowForm(false)}
-                style={{ 
-                  backgroundColor: "#f44336", 
-                  color: "white",
-                  border: "none"
-                }}
+                style={{ backgroundColor: "#f44336", color: "white", border: "none" }}
+                type="button"
               >
                 Close
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label small fw-medium text-muted">Offer Title</label>
+                  <label className="form-label small fw-medium text-muted">
+                    Offer Title
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -314,7 +374,9 @@ export default function ManageOffers() {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label small fw-medium text-muted">Price (৳)</label>
+                  <label className="form-label small fw-medium text-muted">
+                    Price (৳)
+                  </label>
                   <input
                     type="number"
                     className="form-control"
@@ -328,7 +390,9 @@ export default function ManageOffers() {
                 </div>
 
                 <div className="col-md-12">
-                  <label className="form-label small fw-medium text-muted">Description</label>
+                  <label className="form-label small fw-medium text-muted">
+                    Description
+                  </label>
                   <textarea
                     className="form-control"
                     style={{ borderColor: "#9c27b0" }}
@@ -397,7 +461,9 @@ export default function ManageOffers() {
 
                 {form.service === "Other" && (
                   <div className="col-md-6">
-                    <label className="form-label small fw-medium text-muted">Custom Service Name</label>
+                    <label className="form-label small fw-medium text-muted">
+                      Custom Service Name
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -441,10 +507,10 @@ export default function ManageOffers() {
                   />
                   {imagePreview && (
                     <div className="mt-2">
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
-                        className="img-thumbnail" 
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="img-thumbnail"
                         style={{ width: "150px", height: "150px", objectFit: "cover" }}
                       />
                     </div>
@@ -452,20 +518,23 @@ export default function ManageOffers() {
                 </div>
 
                 <div className="col-md-12 text-end pt-2">
-                  <button 
+                  <button
                     className="btn"
                     type="submit"
                     disabled={loading}
-                    style={{ 
-                      backgroundColor: "#25d366", 
+                    style={{
+                      backgroundColor: "#25d366",
                       color: "white",
                       border: "none",
-                      minWidth: "120px"
+                      minWidth: "120px",
                     }}
                   >
                     {loading ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        ></span>
                         Saving...
                       </>
                     ) : (
@@ -486,63 +555,74 @@ export default function ManageOffers() {
             <span className="input-group-text bg-white border-end-0">
               <FaSearch style={{ color: "#8a5a6d" }} />
             </span>
-            <input 
-              type="text" 
-              className="form-control border-start-0" 
+            <input
+              type="text"
+              className="form-control border-start-0"
               placeholder="Search offers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="d-flex gap-1">
-            <button 
+            <button
               className={`btn btn-sm ${activeFilter === "all" ? "" : "btn-light"}`}
               onClick={() => setActiveFilter("all")}
-              style={{ 
+              style={{
                 backgroundColor: activeFilter === "all" ? "#ff4081" : "white",
                 color: activeFilter === "all" ? "white" : "#495057",
-                border: `1px solid ${activeFilter === "all" ? "#ff4081" : "#dee2e6"}`
+                border: `1px solid ${
+                  activeFilter === "all" ? "#ff4081" : "#dee2e6"
+                }`,
               }}
             >
               All
             </button>
-            <button 
+
+            <button
               className={`btn btn-sm ${activeFilter === "active" ? "" : "btn-light"}`}
               onClick={() => setActiveFilter("active")}
-              style={{ 
+              style={{
                 backgroundColor: activeFilter === "active" ? "#25d366" : "white",
                 color: activeFilter === "active" ? "white" : "#495057",
-                border: `1px solid ${activeFilter === "active" ? "#25d366" : "#dee2e6"}`
+                border: `1px solid ${
+                  activeFilter === "active" ? "#25d366" : "#dee2e6"
+                }`,
               }}
             >
               Active
             </button>
-            <button 
+
+            <button
               className={`btn btn-sm ${activeFilter === "upcoming" ? "" : "btn-light"}`}
               onClick={() => setActiveFilter("upcoming")}
-              style={{ 
+              style={{
                 backgroundColor: activeFilter === "upcoming" ? "#ff9800" : "white",
                 color: activeFilter === "upcoming" ? "white" : "#495057",
-                border: `1px solid ${activeFilter === "upcoming" ? "#ff9800" : "#dee2e6"}`
+                border: `1px solid ${
+                  activeFilter === "upcoming" ? "#ff9800" : "#dee2e6"
+                }`,
               }}
             >
               Upcoming
             </button>
-            <button 
+
+            <button
               className={`btn btn-sm ${activeFilter === "expired" ? "" : "btn-light"}`}
               onClick={() => setActiveFilter("expired")}
-              style={{ 
+              style={{
                 backgroundColor: activeFilter === "expired" ? "#f44336" : "white",
                 color: activeFilter === "expired" ? "white" : "#495057",
-                border: `1px solid ${activeFilter === "expired" ? "#f44336" : "#dee2e6"}`
+                border: `1px solid ${
+                  activeFilter === "expired" ? "#f44336" : "#dee2e6"
+                }`,
               }}
             >
               Expired
             </button>
           </div>
         </div>
-        
+
         <div className="small text-muted">
           Showing {filteredOffers.length} of {offers.length} offers
         </div>
@@ -561,13 +641,14 @@ export default function ManageOffers() {
             const now = new Date();
             const start = new Date(offer.start_date);
             const end = new Date(offer.end_date);
+
             const isActive = now >= start && now <= end;
             const isUpcoming = now < start;
             const isExpired = now > end;
-            
+
             let statusColor = "#6c757d";
             let statusText = "Inactive";
-            
+
             if (isActive) {
               statusColor = "#25d366";
               statusText = "Active";
@@ -581,48 +662,53 @@ export default function ManageOffers() {
 
             return (
               <div className="col-md-4" key={offer.id}>
-                <div 
+                <div
                   className="card border-0 shadow-sm h-100"
                   style={{ transition: "all 0.3s ease" }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                  onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.transform = "translateY(-5px)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.transform = "translateY(0)")
+                  }
                 >
                   <div className="position-relative">
                     {offer.image && (
                       <img
-                        src={`${API_URL}${offer.image}`}
+                        src={getImageSrc(offer.image)}
                         alt={offer.title}
                         className="card-img-top"
-                        style={{ 
-                          height: "200px", 
+                        style={{
+                          height: "200px",
                           objectFit: "cover",
                           borderTopLeftRadius: "0.5rem",
-                          borderTopRightRadius: "0.5rem"
+                          borderTopRightRadius: "0.5rem",
                         }}
                       />
                     )}
                     <div className="position-absolute top-0 end-0 m-2">
-                      <span 
+                      <span
                         className="badge px-3 py-2"
-                        style={{ 
+                        style={{
                           backgroundColor: `${statusColor}20`,
                           color: statusColor,
-                          fontWeight: "600"
+                          fontWeight: "600",
                         }}
                       >
                         {statusText}
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="card-body p-3">
                     <h5 className="fw-bold mb-2" style={{ color: "#8a5a6d" }}>
                       {offer.title}
                     </h5>
+
                     <p className="text-muted small mb-3" style={{ minHeight: "40px" }}>
                       {offer.description || "No description available"}
                     </p>
-                    
+
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <div>
                         <span className="small text-muted">Service:</span>
@@ -634,36 +720,37 @@ export default function ManageOffers() {
                         ৳{parseFloat(offer.price || 0).toLocaleString()}
                       </div>
                     </div>
-                    
+
                     <div className="small text-muted mb-3">
                       <FaCalendarAlt className="me-1" />
-                      {new Date(offer.start_date).toLocaleDateString()} – {new Date(offer.end_date).toLocaleDateString()}
+                      {new Date(offer.start_date).toLocaleDateString()} –{" "}
+                      {new Date(offer.end_date).toLocaleDateString()}
                     </div>
-                    
+
                     {offer.terms && (
                       <div className="small text-muted mb-3">
                         <FaFileAlt className="me-1" />
-                        {offer.terms.length > 60 ? `${offer.terms.substring(0, 60)}...` : offer.terms}
+                        {offer.terms.length > 60
+                          ? `${offer.terms.substring(0, 60)}...`
+                          : offer.terms}
                       </div>
                     )}
-                    
+
                     <div className="d-flex justify-content-between align-items-center">
-                      <button 
+                      <button
                         className="btn btn-sm d-flex align-items-center gap-1"
-                        style={{ 
-                          backgroundColor: "rgba(244, 67, 54, 0.1)", 
+                        style={{
+                          backgroundColor: "rgba(244, 67, 54, 0.1)",
                           color: "#f44336",
-                          border: "none"
+                          border: "none",
                         }}
                         onClick={() => handleDelete(offer.id)}
                       >
                         <FaTrash />
                         Delete
                       </button>
-                      
-                      <span className="small text-muted">
-                        ID: #{offer.id}
-                      </span>
+
+                      <span className="small text-muted">ID: #{offer.id}</span>
                     </div>
                   </div>
                 </div>
