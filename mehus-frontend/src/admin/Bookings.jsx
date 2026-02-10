@@ -59,7 +59,7 @@ axios.get(`${API_URL}/api/bookings`)
 
   // ✅ Status Update Function
   const handleStatusChange = (id, newStatus) => {
-    axios.put(`http://localhost:5000/api/bookings/${id}/status`, { status: newStatus })
+axios.put(`${API_URL}/api/bookings/${id}/status`, { status: newStatus })
       .then(() => {
         setBookings(bookings.map(b => 
           b.id === id ? { ...b, status: newStatus } : b
@@ -76,11 +76,12 @@ axios.get(`${API_URL}/api/bookings`)
     const total = prompt("Enter Total Amount (৳):");
     
     if (advance && due && total) {
-      axios.put(`http://localhost:5000/api/receipts/${booking.id}/confirm`, { 
-        advance, 
-        due, 
-        total 
-      })
+     axios.put(`${API_URL}/api/receipts/${booking.id}/confirm`, { 
+  advance, 
+  due, 
+  total 
+})
+
       .then(() => alert("✅ Receipt Confirmed & Finance Updated"))
       .catch(err => console.error("❌ Error:", err));
     }
