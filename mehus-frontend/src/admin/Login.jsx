@@ -10,6 +10,8 @@ import {
   FaPalette,
   FaStore
 } from "react-icons/fa";
+import { API_URL } from "../config/api";
+
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -25,7 +27,7 @@ export default function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+const res = await axios.post(`${API_URL}/api/auth/login`, {
         username, 
         password
       });

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { API_URL } from "../config/api";
+
 
 export default function Booking() {
   const location = useLocation();
@@ -65,7 +67,7 @@ export default function Booking() {
     setMessage(null);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/bookings", {
+const res = await axios.post(`${API_URL}/api/bookings`, {
         ...formData,
         price: 0,
       });
