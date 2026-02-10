@@ -12,18 +12,22 @@ import offersRoutes from "./routes/offersRoutes.js";
 dotenv.config();
 const app = express();
 
-// ✅ middleware
+// ✅ middleware (CORS + JSON)
 app.use(
   cors({
     origin: [
-      "https://mehus-makeover-salon.vercel.app", // ✅ your Vercel frontend
+      "https://mehus-makeover-salon.vercel.app", // ✅ Vercel frontend
       "http://localhost:5173", // ✅ local dev (Vite)
       "http://localhost:3000", // ✅ local dev (React)
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // ✅ safe for future (cookies/session)
   })
 );
+
+// ✅ handle preflight requests (helps with some browsers/proxies)
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -40,14 +44,13 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/finance", financeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/receipts", receiptRoutes);
+app.use("/api/offers", offersRoutes);
 
 // ✅ serve uploaded images
 app.use("/uploads", express.static("uploads"));
 
-app.use("/api/offers", offersRoutes);
-
 // ✅ server start
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
