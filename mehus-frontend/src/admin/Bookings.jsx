@@ -16,6 +16,8 @@ import {
   FaDownload,
   FaSync
 } from "react-icons/fa";
+import { API_URL } from "../config/api";
+
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([]);
@@ -37,7 +39,7 @@ export default function Bookings() {
 
   const fetchBookings = () => {
     setLoading(true);
-    axios.get("http://localhost:5000/api/bookings")
+axios.get(`${API_URL}/api/bookings`)
       .then(res => {
         const bookingsData = res.data || [];
         setBookings(bookingsData);
