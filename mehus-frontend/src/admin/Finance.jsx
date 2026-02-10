@@ -10,6 +10,8 @@ import {
   FaFilter,
   FaFileExport
 } from "react-icons/fa";
+import { API_URL } from "../config/api";
+
 
 export default function Finance() {
   const [records, setRecords] = useState([]);
@@ -27,7 +29,7 @@ export default function Finance() {
   async function fetchRecords() {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/finance");
+const res = await axios.get(`${API_URL}/api/finance`);
       setRecords(res.data);
     } catch (err) {
       console.error(err);
@@ -40,7 +42,7 @@ export default function Finance() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/finance", { type, amount, note });
+await axios.post(`${API_URL}/api/finance`, { type, amount, note });
       await fetchRecords();
       setAmount("");
       setNote("");

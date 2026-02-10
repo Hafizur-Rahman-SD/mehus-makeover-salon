@@ -17,8 +17,10 @@ import {
   FaSearch,
   FaFilter
 } from "react-icons/fa";
+import { API_URL } from "../config/api";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+//const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Receipts() {
   const [rows, setRows] = useState([]);
@@ -37,7 +39,7 @@ export default function Receipts() {
   const load = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/api/receipts`);
+      const res = await axios.get(`${API_URL}/api/receipts`);
       setRows(res.data);
     } catch (error) {
       console.error(error);
@@ -52,7 +54,7 @@ export default function Receipts() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`${API}/api/receipts`, form);
+      await axios.post(`${API_URL}/api/receipts`, form);
       setForm({ 
         date: new Date().toISOString().split('T')[0],
         customer_name: "", 
@@ -72,7 +74,7 @@ export default function Receipts() {
   const confirm = async (id) => {
     if (window.confirm("Are you sure you want to confirm this receipt?")) {
       try {
-        await axios.put(`${API}/api/receipts/${id}/confirm`);
+        await axios.put(`${API_URL}/api/receipts/${id}/confirm`);
         await load();
       } catch (error) {
         console.error(error);
